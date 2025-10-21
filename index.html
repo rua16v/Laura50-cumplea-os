@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0e0e12" />
+<title>Laura — 50 grandes éxitos de mi vida (v28)</title>
+<style>
+  :root{--bg:#0e0e12;--card:#171720;--text:#fff;--muted:#b6b6c6;--hero-y:62%}
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+    background: radial-gradient(1200px 800px at 10% 10%, #1a1a26, var(--bg));
+    color: var(--text);
+    padding-left:max(0px,env(safe-area-inset-left));
+    padding-right:max(0px,env(safe-area-inset-right));
+  }
+  header.hero{position:relative; overflow:hidden; min-height:100svh;}
+  .hero::before{
+    content:""; position:absolute; inset:0;
+    background-image:url('https://lh3.googleusercontent.com/d/1UY99dfV9phWzYvwTspN7wuz9i1vbzHLP');
+    background-size:cover; background-position:center var(--hero-y);
+    filter:saturate(112%) contrast(104%) brightness(86%);
+  }
+  .hero::after{
+    content:""; position:absolute; inset:0;
+    background: radial-gradient(60% 52% at 50% 24%, rgba(0,0,0,.10) 0%, rgba(0,0,0,.48) 58%, rgba(0,0,0,.72) 100%);
+  }
+  .gold{
+    position:absolute; left:50%; top:76%; transform:translate(-50%,-50%);
+    width:min(88vw,820px); text-align:center; display:flex; gap:.5rem; flex-direction:column;
+    padding-bottom:calc(env(safe-area-inset-bottom) + 10px);
+  }
+  @media (min-width:900px){
+    .gold{left:6vw; transform:translateY(-50%); text-align:left; width:min(48vw,860px); top:74%;}
+  }
+  .gold h1{
+    margin:0; font-weight:900; letter-spacing:.06em;
+    background: linear-gradient(100deg,#fff5d2 0%, #f6d077 18%, #d5a848 52%, #c59037 72%, #fff2c6 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 2px rgba(255,209,102,.22), 0 10px 22px rgba(0,0,0,.42);
+    font-size: clamp(2.5rem, 9vw, 6rem); line-height:.95;
+  }
+  .gold h2{
+    margin:0; font-weight:700; letter-spacing:.04em;
+    background: linear-gradient(135deg,#FFF4C6,#F6CF6B 45%,#D7A647 85%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 2px rgba(255,209,102,.16);
+    font-size: clamp(1rem, 3.2vw, 1.8rem);
+  }
+  main{max-width:1100px; margin:-1.5rem auto 4rem; padding: 0 1rem;}
+  .panel{background: rgba(23,23,32,.86); border:1px solid rgba(255,255,255,.08);
+         border-radius:20px; padding:1rem; backdrop-filter: blur(6px);}
+  .toolbar{display:flex; gap:.75rem; align-items:center; justify-content:space-between; flex-wrap:wrap; padding:.75rem;}
+  .search{flex:1 1 280px;}
+  .search input{width:100%; padding:.75rem 1rem; border-radius:12px; border:1px solid rgba(255,255,255,.1); background:#12121a; color:var(--text); outline:none; font-size:16px;}
+  .search input::placeholder{color:#9aa}
+  .counter{color:var(--muted); font-size:.95rem;}
+  .list{display:flex; flex-direction:column; gap:.5rem; padding:.5rem;}
+  .song{border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden; background: linear-gradient(160deg, rgba(255,255,255,.02), rgba(255,255,255,.0));}
+  .song__title{margin:0; padding:.95rem 1rem; cursor:pointer; font-weight:700; display:flex; align-items:center; justify-content:space-between; gap:.75rem;}
+  .song__title:hover{ background: rgba(255,255,255,.03); }
+  .song__title:focus-visible{ outline:2px solid #f6cf6b; outline-offset:-2px; border-radius:10px;}
+  .caret{ transition: transform .25s ease; opacity:.9; }
+  .song[aria-expanded="true"] .caret{ transform: rotate(90deg); }
+  .song__content{ max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 1rem; }
+  .song[aria-expanded="true"] .song__content{ padding:.6rem 1rem 1rem; }
+  .player,.lyrics{width:100%; border:none; border-radius:12px; background:#0f0f16}
+  .player{ height: 190px; }
+  .lyrics{ height: 220px; margin-top:.6rem; }
+  footer{ text-align:center; color:#b6b6c6; padding:2rem 1rem; }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="gold" aria-label="Portada del álbum">
+      <h1>LAURA</h1>
+      <h2>50 GRANDES ÉXITOS DE MI VIDA</h2>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel" aria-label="Listado de canciones">
+      <div class="toolbar">
+        <div class="search">
+          <input id="search" type="search" placeholder="Buscar canción por título…" aria-label="Buscar canción" />
+        </div>
+        <div class="counter"><span id="count">0</span> canciones</div>
+      </div>
+
+      <div class="list" id="list"></div>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> Laura — 50 grandes éxitos de mi vida</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  function stripDiacritics(t){ try { return t.normalize('NFD').replace(/\p{Diacritic}/gu,''); } catch { return t; } }
+  function normalize(t){ return stripDiacritics((t||"").toLowerCase()); }
+  function drivePreview(id){ return id ? "https://drive.google.com/file/d/"+encodeURIComponent(id)+"/preview" : ""; }
+
+  const songs = [{"title": "A su ritmo y con sabor - Carlos, Lita , Carlota, Andrea y Marta", "mp3Id": "13Q6nVVxhGwLl0DS9MnXrcz844SFyKFna", "lyricsId": "1bdigBSjdfEHutZZ3_JCQO9n8qpDLeLku"}, {"title": "Aeropuertos, vientos y minifaldas - Santi Oviedo", "mp3Id": "1UHjEtIYAENQfm524aLU34XUgI7lJns9N", "lyricsId": "1fx8-s1hmPfcKE6vT3Jkk0kXlQS2lYF5S"}, {"title": "Dejadme vivir mi vida - Lidon-Millan", "mp3Id": "1wLnvmqzegz-GduFLtAlmU1B8bbjnEh5H", "lyricsId": "1dhcBBqR4ryP3VyZlRfMppLlA7VNkXcdj"}, {"title": "La chica del octavo nivel - Javi y Manoli", "mp3Id": "1YH_O-Xc24XGfbnwB4VQSrIM_GTl_XOhf", "lyricsId": "1zSQ1zzCyLc54FICNSiIKCjWJoAj5ZWOr"}, {"title": "La familia que elegimos - Andres, Pili, Ana y Carol", "mp3Id": "1RjEFyqAhUvtW-Dyl_xiyWFS6UehATsb0", "lyricsId": "1TRtM4CcdYSFRURkQo_H00xU2MELOj-3W"}, {"title": "La mesa de quesos - O'hara Valdivia", "mp3Id": "1Q2NZUWuSVz2wNrobBFh3ctMxspBy9HMM", "lyricsId": "1WfVTyG1xawosc_R3TUumwTVu4upQnRwr"}, {"title": "Las chicas sushi - The Sushis & The Mariditos", "mp3Id": "1AK217eluO2Mdx1gjHVUmfePTLLa4KdXc", "lyricsId": "1Bci84azUhLdvJ_3WcqTvhpYBwMV663w2"}, {"title": "Las lentejas de Reus - Monica", "mp3Id": "1EEYqAZ7hxS1az5BcgMMQEtGDjfW6EIJb", "lyricsId": "1ifymf6rmNcHFFG5IYizJBzHPKvyQpIYb"}, {"title": "Laura, llum que il.lumina - Laia, Arlet y Marc", "mp3Id": "1BrEX78Q7B0_yGAeUj9r5ogSqxwHi3tE6", "lyricsId": "1czZKrWBwMHdK5f8vp3Shz6KXBbnMP9c0"}, {"title": "Los pastores - Sergio Oviedo", "mp3Id": "1uuNaCy45TEsXuKv2MzC9CNIAn04FZ5s4", "lyricsId": "1UAjprcx3HGwAjJYkX-XrKlJFm6nHMb45"}, {"title": "Maquillada para brillar - Pilar Toribio", "mp3Id": "1TeNFUW49xIAh9Nwia_44gYHePERpurLG", "lyricsId": "1WW1tlDFhydEuSWb4fTFEgHLzz2B5uI2y"}, {"title": "No soy muy morcillera- Agora Band", "mp3Id": "1WD-dLFhC494jQZar1velXp1QNHQsts7Y", "lyricsId": "13APo9NmldbRmVBNAfJSUQVwzDur2iERI"}, {"title": "Ojos cerrados - Cristina Morbin", "mp3Id": "15uo0-lnYPO5UCyUYQjaf6ucRqyNXP-MX", "lyricsId": "1kMycr0fwi56khfFyqXBXc5UFkpa6SFom"}, {"title": "Otra no puede haber - Pilar y Alberto", "mp3Id": "17ZTovQf6xIFah34t4tbpLxCE7PKFlTkW", "lyricsId": "1MNSX40tSNnfjpZ7d0qIUqa18AUndtoQI"}, {"title": "Pintate los labios - Esther Antequera", "mp3Id": "1BvagL2WU0geWXCnTjXbkdQn4VGMGrQ4k", "lyricsId": "1EXNTrDnzFHOoFeT5LQonPYObqSrxEEsS"}, {"title": "Ritmo familiar - Cristina Oviedo", "mp3Id": "1AytSfsZojSshu1R24_-0go8kWbCx2rg9", "lyricsId": "12NneLZiVs1Wh3GA7fWSFxr7E9q2R3WgD"}, {"title": "Siempre en mi equipo - Jose R. Rua", "mp3Id": "1ZEyZOJ-pZnbB09DZvNjy5ICG55_Y9i5Q", "lyricsId": "1AijbYpxLphphsOU6IW93NRIwPqIZOvKf"}, {"title": "Tardes de Cinexin - Mario Gonzalez", "mp3Id": "1mR3ID3pFov0AKHXWKo_8oLkLWBtjINhJ", "lyricsId": "1RgSnIeFew8nugwadnWDUMrNvbHw1Zn-f"}, {"title": "Tortilla de atun- Isa, Encarna y Rosario", "mp3Id": "11PehOTkdF0CTQxiAnRQDvg7RUMk3kkdY", "lyricsId": "1Lvd0W3mxTyEYUih7LNSYpj6O1tZBpgMN"}, {"title": "Un brindis por ti - Nuri, Ralf y Alexandra", "mp3Id": "1_lRCueKG2Xttvyv0ieF7FJP8vY9fPR76", "lyricsId": "1GTl3kEWRqhSdsG9t9v1YiX4bJ4FKk8QZ"}, {"title": "Un capitulo de Crims - Sergio Sanchez y Esther", "mp3Id": "1jC_b6QH-xV5-FCsSoV7iJVehCqgGeZnO", "lyricsId": "1yVl5oUcZq-cfJeXfgXlAqDS_ojtgpCm8"}, {"title": "Yo me voy a casa - Ivan Forne", "mp3Id": "12lVKma3sRqWYltbQV4dQq3QV84yLAHWl", "lyricsId": "1ConHJrVtYLqrvumdpD5ZRKdyD63mCOTj"}];
+
+  const list = document.getElementById('list');
+  const count = document.getElementById('count');
+  const search = document.getElementById('search');
+  let openItem = null;
+
+  function collapse(item, content){
+    item.setAttribute('aria-expanded','false');
+    content.style.maxHeight = '0px';
+  }
+  function expand(item, content){
+    item.setAttribute('aria-expanded','true');
+    requestAnimationFrame(()=>{ content.style.maxHeight = content.scrollHeight + 40 + 'px'; });
+  }
+
+  function render(data){
+    list.innerHTML = "";
+    openItem = null;
+    data.forEach((s) => {
+      const item = document.createElement('article');
+      item.className = 'song';
+      item.setAttribute('aria-expanded', 'false');
+
+      const title = document.createElement('h3');
+      title.className = 'song__title';
+      title.innerHTML = "<span>" + (s.title || "Sin título") + "</span><span class='caret'>▶</span>";
+      title.tabIndex = 0;
+      item.appendChild(title);
+
+      const content = document.createElement('div');
+      content.className = 'song__content';
+      item.appendChild(content);
+
+      let mounted = false;
+      function mount(){
+        if (mounted) return; mounted = true;
+        if (s.mp3Id){
+          const audio = document.createElement('iframe');
+          audio.className = 'player';
+          audio.src = drivePreview(s.mp3Id);
+          audio.loading = "lazy";
+          audio.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture";
+          content.appendChild(audio);
+        }
+        if (s.lyricsId){
+          const lyrFrame = document.createElement('iframe');
+          lyrFrame.className = 'lyrics';
+          lyrFrame.src = drivePreview(s.lyricsId);
+          lyrFrame.loading = "lazy";
+          lyrFrame.allow = "autoplay; fullscreen";
+          content.appendChild(lyrFrame);
+        }
+      }
+
+      function toggle(){
+        const expanded = item.getAttribute('aria-expanded') === 'true';
+        if (expanded){
+          collapse(item, content);
+          openItem = null;
+        } else {
+          if (openItem && openItem !== item){
+            const prevContent = openItem.querySelector('.song__content');
+            if (prevContent) collapse(openItem, prevContent);
+          }
+          mount();
+          expand(item, content);
+          openItem = item;
+          item.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      }
+      title.addEventListener('click', toggle);
+      title.addEventListener('keydown', (e)=>{ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+
+      list.appendChild(item);
+    });
+    count.textContent = data.length;
+  }
+
+  search.addEventListener('input', () => {
+    const q = normalize(search.value);
+    const filtered = songs.filter(s => normalize(s.title).includes(q));
+    render(filtered);
+  });
+
+  render(songs);
+</script>
+</body>
+</html>
