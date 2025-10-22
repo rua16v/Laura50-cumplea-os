@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0e0e12" />
-<title>Laura — 50 grandes éxitos de mi vida (v28)</title>
+<title>Laura — 50 grandes éxitos de mi vida (v30)</title>
 <style>
   :root{--bg:#0e0e12;--card:#171720;--text:#fff;--muted:#b6b6c6;--hero-y:62%}
   *{box-sizing:border-box}
@@ -56,7 +56,7 @@
   .search{flex:1 1 280px;}
   .search input{width:100%; padding:.75rem 1rem; border-radius:12px; border:1px solid rgba(255,255,255,.1); background:#12121a; color:var(--text); outline:none; font-size:16px;}
   .search input::placeholder{color:#9aa}
-  .counter{color:var(--muted); font-size:.95rem;}
+  .counter{color: var(--muted); font-size:.95rem;}
   .list{display:flex; flex-direction:column; gap:.5rem; padding:.5rem;}
   .song{border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden; background: linear-gradient(160deg, rgba(255,255,255,.02), rgba(255,255,255,.0));}
   .song__title{margin:0; padding:.95rem 1rem; cursor:pointer; font-weight:700; display:flex; align-items:center; justify-content:space-between; gap:.75rem;}
@@ -70,6 +70,7 @@
   .player{ height: 190px; }
   .lyrics{ height: 220px; margin-top:.6rem; }
   footer{ text-align:center; color:#b6b6c6; padding:2rem 1rem; }
+  .hint{ display:block; text-align:center; color:#9aa; font-size:.9rem; margin-top:.25rem;}
 </style>
 </head>
 <body>
@@ -85,23 +86,55 @@
       <div class="toolbar">
         <div class="search">
           <input id="search" type="search" placeholder="Buscar canción por título…" aria-label="Buscar canción" />
+          <small class="hint">Si no se cargan los reproductores, abre en el navegador del móvil.</small>
         </div>
         <div class="counter"><span id="count">0</span> canciones</div>
       </div>
-
       <div class="list" id="list"></div>
     </section>
   </main>
 
-  <footer>© <span id="year"></span> Laura — 50 grandes éxitos de mi vida</footer>
+  <footer>© <span id="year"></span> Laura — 50 grandes éxitos de mi vida · v30</footer>
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
+
   function stripDiacritics(t){ try { return t.normalize('NFD').replace(/\p{Diacritic}/gu,''); } catch { return t; } }
   function normalize(t){ return stripDiacritics((t||"").toLowerCase()); }
   function drivePreview(id){ return id ? "https://drive.google.com/file/d/"+encodeURIComponent(id)+"/preview" : ""; }
 
-  const songs = [{"title": "A su ritmo y con sabor - Carlos, Lita , Carlota, Andrea y Marta", "mp3Id": "13Q6nVVxhGwLl0DS9MnXrcz844SFyKFna", "lyricsId": "1bdigBSjdfEHutZZ3_JCQO9n8qpDLeLku"}, {"title": "Aeropuertos, vientos y minifaldas - Santi Oviedo", "mp3Id": "1UHjEtIYAENQfm524aLU34XUgI7lJns9N", "lyricsId": "1fx8-s1hmPfcKE6vT3Jkk0kXlQS2lYF5S"}, {"title": "Dejadme vivir mi vida - Lidon-Millan", "mp3Id": "1wLnvmqzegz-GduFLtAlmU1B8bbjnEh5H", "lyricsId": "1dhcBBqR4ryP3VyZlRfMppLlA7VNkXcdj"}, {"title": "La chica del octavo nivel - Javi y Manoli", "mp3Id": "1YH_O-Xc24XGfbnwB4VQSrIM_GTl_XOhf", "lyricsId": "1zSQ1zzCyLc54FICNSiIKCjWJoAj5ZWOr"}, {"title": "La familia que elegimos - Andres, Pili, Ana y Carol", "mp3Id": "1RjEFyqAhUvtW-Dyl_xiyWFS6UehATsb0", "lyricsId": "1TRtM4CcdYSFRURkQo_H00xU2MELOj-3W"}, {"title": "La mesa de quesos - O'hara Valdivia", "mp3Id": "1Q2NZUWuSVz2wNrobBFh3ctMxspBy9HMM", "lyricsId": "1WfVTyG1xawosc_R3TUumwTVu4upQnRwr"}, {"title": "Las chicas sushi - The Sushis & The Mariditos", "mp3Id": "1AK217eluO2Mdx1gjHVUmfePTLLa4KdXc", "lyricsId": "1Bci84azUhLdvJ_3WcqTvhpYBwMV663w2"}, {"title": "Las lentejas de Reus - Monica", "mp3Id": "1EEYqAZ7hxS1az5BcgMMQEtGDjfW6EIJb", "lyricsId": "1ifymf6rmNcHFFG5IYizJBzHPKvyQpIYb"}, {"title": "Laura, llum que il.lumina - Laia, Arlet y Marc", "mp3Id": "1BrEX78Q7B0_yGAeUj9r5ogSqxwHi3tE6", "lyricsId": "1czZKrWBwMHdK5f8vp3Shz6KXBbnMP9c0"}, {"title": "Los pastores - Sergio Oviedo", "mp3Id": "1uuNaCy45TEsXuKv2MzC9CNIAn04FZ5s4", "lyricsId": "1UAjprcx3HGwAjJYkX-XrKlJFm6nHMb45"}, {"title": "Maquillada para brillar - Pilar Toribio", "mp3Id": "1TeNFUW49xIAh9Nwia_44gYHePERpurLG", "lyricsId": "1WW1tlDFhydEuSWb4fTFEgHLzz2B5uI2y"}, {"title": "No soy muy morcillera- Agora Band", "mp3Id": "1WD-dLFhC494jQZar1velXp1QNHQsts7Y", "lyricsId": "13APo9NmldbRmVBNAfJSUQVwzDur2iERI"}, {"title": "Ojos cerrados - Cristina Morbin", "mp3Id": "15uo0-lnYPO5UCyUYQjaf6ucRqyNXP-MX", "lyricsId": "1kMycr0fwi56khfFyqXBXc5UFkpa6SFom"}, {"title": "Otra no puede haber - Pilar y Alberto", "mp3Id": "17ZTovQf6xIFah34t4tbpLxCE7PKFlTkW", "lyricsId": "1MNSX40tSNnfjpZ7d0qIUqa18AUndtoQI"}, {"title": "Pintate los labios - Esther Antequera", "mp3Id": "1BvagL2WU0geWXCnTjXbkdQn4VGMGrQ4k", "lyricsId": "1EXNTrDnzFHOoFeT5LQonPYObqSrxEEsS"}, {"title": "Ritmo familiar - Cristina Oviedo", "mp3Id": "1AytSfsZojSshu1R24_-0go8kWbCx2rg9", "lyricsId": "12NneLZiVs1Wh3GA7fWSFxr7E9q2R3WgD"}, {"title": "Siempre en mi equipo - Jose R. Rua", "mp3Id": "1ZEyZOJ-pZnbB09DZvNjy5ICG55_Y9i5Q", "lyricsId": "1AijbYpxLphphsOU6IW93NRIwPqIZOvKf"}, {"title": "Tardes de Cinexin - Mario Gonzalez", "mp3Id": "1mR3ID3pFov0AKHXWKo_8oLkLWBtjINhJ", "lyricsId": "1RgSnIeFew8nugwadnWDUMrNvbHw1Zn-f"}, {"title": "Tortilla de atun- Isa, Encarna y Rosario", "mp3Id": "11PehOTkdF0CTQxiAnRQDvg7RUMk3kkdY", "lyricsId": "1Lvd0W3mxTyEYUih7LNSYpj6O1tZBpgMN"}, {"title": "Un brindis por ti - Nuri, Ralf y Alexandra", "mp3Id": "1_lRCueKG2Xttvyv0ieF7FJP8vY9fPR76", "lyricsId": "1GTl3kEWRqhSdsG9t9v1YiX4bJ4FKk8QZ"}, {"title": "Un capitulo de Crims - Sergio Sanchez y Esther", "mp3Id": "1jC_b6QH-xV5-FCsSoV7iJVehCqgGeZnO", "lyricsId": "1yVl5oUcZq-cfJeXfgXlAqDS_ojtgpCm8"}, {"title": "Yo me voy a casa - Ivan Forne", "mp3Id": "12lVKma3sRqWYltbQV4dQq3QV84yLAHWl", "lyricsId": "1ConHJrVtYLqrvumdpD5ZRKdyD63mCOTj"}];
+  const SONGS = [
+    {"number":null,"title":"19 diciembres - Jose Luis Juan","mp3Id":"1An42oLlTb5DQLjb7-2tkg48fVMi5uY4M","lyricsId":"1Q7w_4WPSzcC0hTDr2QUlkG4Er_re4Rrj","lyricsInline":""},
+    {"number":null,"title":"A su ritmo y con sabor - Carlos, Lita , Carlota, Andrea y Marta","mp3Id":"13Q6nVVxhGwLl0DS9MnXrcz844SFyKFna","lyricsId":"1bdigBSjdfEHutZZ3_JCQO9n8qpDLeLku","lyricsInline":""},
+    {"number":null,"title":"Aeropuertos, vientos y minifaldas - Santi Oviedo","mp3Id":"1UHjEtIYAENQfm524aLU34XUgI7lJns9N","lyricsId":"1fx8-s1hmPfcKE6vT3Jkk0kXlQS2lYF5S","lyricsInline":""},
+    {"number":null,"title":"Cincuenta y brillando - Ana Juan","mp3Id":"1b2oTCO34eeSW_VGiiT1HKuUBbPEg6KS_","lyricsId":"1ecpdgZUt4OJws9IrUXZPl5afznGpasJg","lyricsInline":""},
+    {"number":null,"title":"Dejadme vivir mi vida - Lidon-Millan","mp3Id":"1wLnvmqzegz-GduFLtAlmU1B8bbjnEh5H","lyricsId":"1dhcBBqR4ryP3VyZlRfMppLlA7VNkXcdj","lyricsInline":""},
+    {"number":null,"title":"Desde aquel diciembre - Dani Juan","mp3Id":"1gPqi07qFSjOekHJxmMC2L4wbnDKXXrUH","lyricsId":"1zmL-k5RwmqjFWn7cFEnCdUF7Znfgrw4K","lyricsInline":""},
+    {"number":null,"title":"En el gotico te conoci - Mª Angeles Juan y Ramon Rosines","mp3Id":"15N6mH1WNHWKoB856fQ7sy3ZR7m8fSOar","lyricsId":"1gYhHt4rCTzq_-UqY7Nna-EcNTbzzGGyz","lyricsInline":""},
+    {"number":null,"title":"Entre Excells y risas - Silvia Muñoz","mp3Id":"1xPHdD_sZpcq3EMjjq_ugKjUeHa8I_YTS","lyricsId":"10xF7AzH37780IXCzDhRlhk4QjlHv2bu8","lyricsInline":""},
+    {"number":null,"title":"La amistad no mide frecuencias- La Salle Band","mp3Id":"1a67HZclr4upPg7YNR-k3Mrvx5u5GSg7x","lyricsId":"1P9_Nv8as2IxF4dqiaBbLH_BWCzVjR7kN","lyricsInline":""},
+    {"number":null,"title":"La chica del octavo nivel - Javi y Manoli","mp3Id":"1YH_O-Xc24XGfbnwB4VQSrIM_GTl_XOhf","lyricsId":"1zSQ1zzCyLc54FICNSiIKCjWJoAj5ZWOr","lyricsInline":""},
+    {"number":null,"title":"La familia que elegimos - Andres, Pili, Ana y Carol","mp3Id":"1RjEFyqAhUvtW-Dyl_xiyWFS6UehATsb0","lyricsId":"1TRtM4CcdYSFRURkQo_H00xU2MELOj-3W","lyricsInline":""},
+    {"number":null,"title":"La mesa de quesos - O'hara Valdivia","mp3Id":"1Q2NZUWuSVz2wNrobBFh3ctMxspBy9HMM","lyricsId":"1WfVTyG1xawosc_R3TUumwTVu4upQnRwr","lyricsInline":""},
+    {"number":null,"title":"Las chicas sushi - The Sushis & The Mariditos","mp3Id":"1AK217eluO2Mdx1gjHVUmfePTLLa4KdXc","lyricsId":"1Bci84azUhLdvJ_3WcqTvhpYBwMV663w2","lyricsInline":""},
+    {"number":null,"title":"Las lentejas de Reus - Monica","mp3Id":"1EEYqAZ7hxS1az5BcgMMQEtGDjfW6EIJb","lyricsId":"1ifymf6rmNcHFFG5IYizJBzHPKvyQpIYb","lyricsInline":""},
+    {"number":null,"title":"Laura, llum que il.lumina - Laia, Arlet y Marc","mp3Id":"1BrEX78Q7B0_yGAeUj9r5ogSqxwHi3tE6","lyricsId":"1czZKrWBwMHdK5f8vp3Shz6KXBbnMP9c0","lyricsInline":""},
+    {"number":null,"title":"Los cuatro del plan perfecto - Jose, Dani y Ana","mp3Id":"1PG5jKN34ca-fYSzsrzwEzv1G-NHBzFvH","lyricsId":"1N9C4d2A6aMlN5WaQo5oPSRy_KrsbQXcJ","lyricsInline":""},
+    {"number":null,"title":"Los pastores - Sergio Oviedo","mp3Id":"1uuNaCy45TEsXuKv2MzC9CNIAn04FZ5s4","lyricsId":"1UAjprcx3HGwAjJYkX-XrKlJFm6nHMb45","lyricsInline":""},
+    {"number":null,"title":"Maquillada para brillar - Pilar Toribio","mp3Id":"1TeNFUW49xIAh9Nwia_44gYHePERpurLG","lyricsId":"1WW1tlDFhydEuSWb4fTFEgHLzz2B5uI2y","lyricsInline":""},
+    {"number":null,"title":"No soy muy morcillera- Agora Band","mp3Id":"1WD-dLFhC494jQZar1velXp1QNHQsts7Y","lyricsId":"13APo9NmldbRmVBNAfJSUQVwzDur2iERI","lyricsInline":""},
+    {"number":null,"title":"Ojos cerrados - Cristina Morbin","mp3Id":"15uo0-lnYPO5UCyUYQjaf6ucRqyNXP-MX","lyricsId":"1kMycr0fwi56khfFyqXBXc5UFkpa6SFom","lyricsInline":""},
+    {"number":null,"title":"Otra no puede haber - Pilar y Alberto","mp3Id":"17ZTovQf6xIFah34t4tbpLxCE7PKFlTkW","lyricsId":"1MNSX40tSNnfjpZ7d0qIUqa18AUndtoQI","lyricsInline":""},
+    {"number":null,"title":"Pintate los labios - Esther Antequera","mp3Id":"1BvagL2WU0geWXCnTjXbkdQn4VGMGrQ4k","lyricsId":"1EXNTrDnzFHOoFeT5LQonPYObqSrxEEsS","lyricsInline":""},
+    {"number":null,"title":"Ritmo familiar - Cristina Oviedo","mp3Id":"1AytSfsZojSshu1R24_-0go8kWbCx2rg9","lyricsId":"12NneLZiVs1Wh3GA7fWSFxr7E9q2R3WgD","lyricsInline":""},
+    {"number":null,"title":"Siempre en mi equipo - Jose R. Rua","mp3Id":"1ZEyZOJ-pZnbB09DZvNjy5ICG55_Y9i5Q","lyricsId":"1AijbYpxLphphsOU6IW93NRIwPqIZOvKf","lyricsInline":""},
+    {"number":null,"title":"Tardes de Cinexin - Mario Gonzalez","mp3Id":"1mR3ID3pFov0AKHXWKo_8oLkLWBtjINhJ","lyricsId":"1RgSnIeFew8nugwadnWDUMrNvbHw1Zn-f","lyricsInline":""},
+    {"number":null,"title":"Tortilla de atun- Isa, Encarna y Rosario","mp3Id":"11PehOTkdF0CTQxiAnRQDvg7RUMk3kkdY","lyricsId":"1Lvd0W3mxTyEYUih7LNSYpj6O1tZBpgMN","lyricsInline":""},
+    {"number":null,"title":"Un brindis por ti - Nuri, Ralf y Alexandra","mp3Id":"1_lRCueKG2Xttvyv0ieF7FJP8vY9fPR76","lyricsId":"1GTl3kEWRqhSdsG9t9v1YiX4bJ4FKk8QZ","lyricsInline":""},
+    {"number":null,"title":"Un capitulo de Crims - Sergio Sanchez y Esther","mp3Id":"1jC_b6QH-xV5-FCsSoV7iJVehCqgGeZnO","lyricsId":"1yVl5oUcZq-cfJeXfgXlAqDS_ojtgpCm8","lyricsInline":""},
+    {"number":null,"title":"Yo me voy a casa - Ivan Forne","mp3Id":"12lVKma3sRqWYltbQV4dQq3QV84yLAHWl","lyricsId":"1ConHJrVtYLqrvumdpD5ZRKdyD63mCOTj","lyricsInline":""},
+    {"number":null,"title":"Yo no soy muy morcillera- Agora Band","mp3Id":"1GI_FlSRDHkDq62qdxPLuW3aoDCSL9ORz","lyricsId":"1LjI2lF2emBiY2cTsWFZPzQEUhE84AnNb","lyricsInline":""}
+  ];
 
   const list = document.getElementById('list');
   const count = document.getElementById('count');
@@ -182,11 +215,11 @@
 
   search.addEventListener('input', () => {
     const q = normalize(search.value);
-    const filtered = songs.filter(s => normalize(s.title).includes(q));
+    const filtered = SONGS.filter(s => normalize(s.title).includes(q));
     render(filtered);
   });
 
-  render(songs);
+  render(SONGS);
 </script>
 </body>
 </html>
